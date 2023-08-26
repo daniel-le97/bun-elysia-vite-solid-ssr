@@ -1,0 +1,26 @@
+{
+  "name": "bun-solid-ssr",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run index.ts --watch",
+    "build": "bun run build:client && bun run build:server",
+    "build:client": " bun --bun vite build --ssrManifest --outDir dist/client",
+    "build:server": "bun --bun vite build --ssr src/entry-server.tsx --outDir dist/server",
+    "preview": "cross-env NODE_ENV=production bun index.ts"
+  },
+  "dependencies": {
+    "@elysiajs/html": "^0.6.0",
+    "bun-types": "^0.8.1",
+    "elysia": "^0.6.12",
+    "elysia-connect": "^0.1.1",
+    "sirv": "^2.0.3",
+    "solid-js": "^1.7.6"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "vite": "^4.3.9",
+    "vite-plugin-solid": "^2.7.0"
+  }
+}
