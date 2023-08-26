@@ -39,8 +39,8 @@ const getTemplateHTML = async ( path?: string ) => {
 
 const opts = {
     entryServer: `${ process.cwd() }/src/entry-server.tsx`,
-    headScriptReplace: '<!--app-head-->',
-    htmlScriptReplace: '<!--app-html-->',
+    headReplace: '<!--app-head-->',
+    htmlReplace: '<!--app-html-->',
     base: process.env.BASE || '/',
     indexHtml: await getTemplateHTML(),
     ssrManifest: isProduction
@@ -108,8 +108,8 @@ const app = new Elysia()
             const rendered = await render( url, ssrManifest );
             const head = ( rendered.head ?? '' ) + generateHydrationScript();
             const html = template
-                .replace( opts.headScriptReplace, head )
-                .replace( opts.htmlScriptReplace, rendered.html ?? '' );
+                .replace( opts.headReplace, head )
+                .replace( opts.htmlReplace, rendered.html ?? '' );
 
             return context.html( html );
 
