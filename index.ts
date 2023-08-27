@@ -130,4 +130,4 @@ const app = new Elysia()
 
     } )
     .listen( 5173,
-        () => console.log( ' Server started at http://' + app.server?.hostname + ':' + app.server?.port ) );
+        (app) => console.log( ' Server started at http://' + app.hostname + ':' + app.port ) );
