@@ -20,8 +20,15 @@ bun run dev
 
 ```
 
+
+
 ## Why
 
 Elysia is an amazing web framework with type safety out of the box, this replaces Express with elysia
+
+checkout plugin.ts to see how it works
+
+## credits
+
 
 
