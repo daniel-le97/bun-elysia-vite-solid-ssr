@@ -45,7 +45,7 @@ type Options = {
 
 };
 const opts: Options = {
-    entryServer: `${ process.cwd() }/src/entry-server.tsx`,
+    entryServer: `${ process.cwd() }/client/entry-server.tsx`,
     headReplace: '<!--app-head-->',
     htmlReplace: '<!--app-html-->',
     base: process.env.BASE || '/',
@@ -139,26 +139,17 @@ const elysiaViteServer = async ( options: Options ) => {
 
                 } else
                 {
-                    console.log( error );
+                    throw error
                 }
                 context.set.status = 500;
                 return 'error';
-
             }
         } );
-
-    return app;
-
+        return app;
     } catch ( error )
     {
-        console.log( 'error happening at ', error );
-
+        throw new Error( 'unable to load vite plugin' )
     }
-    // console.log(defaults);
-
-
-
-
 
 };
 
