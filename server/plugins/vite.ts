@@ -3,11 +3,6 @@ import type { BunFile } from "bun";
 import type { ElysiaConfig } from "elysia";
 import type { UserConfig, ViteDevServer } from "vite";
 
-
-
-
-
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 const getTemplateHTML = async ( path?: string ) => {
@@ -90,7 +85,7 @@ async function getMiddleWare () {
     }
 };
 
-export const elysiaViteServer = async ( options: Options ) => {
+const elysiaViteServer = async ( options: Options ) => {
     try
     {
         const defaults = assignDefaults( options, opts );
@@ -121,7 +116,7 @@ export const elysiaViteServer = async ( options: Options ) => {
                 render = ( await middleWare.ssrLoadModule( opts.entryServer! ) ).render;
             } else
             {
-                render = ( await import( './dist/server/entry-server.js' ) ).render;
+                render = ( await import( process.cwd() + '/dist/server/entry-server.js' ) ).render;
             }
             try
             {
@@ -167,3 +162,4 @@ export const elysiaViteServer = async ( options: Options ) => {
 
 };
 
+export default elysiaViteServer
