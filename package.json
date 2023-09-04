@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun run index.ts",
+    "dev": "bun run index.ts -- watch",
     "downgrade": "curl https://bun.sh/install | bash -s bun-v0.7.3",
     "build": "bun run build:client && bun run build:server",
     "build:client": " bun --bun vite build --ssrManifest --outDir dist/client",
@@ -14,6 +14,7 @@
   "dependencies": {
     "@auth/core": "^0.13.0",
     "@elysiajs/html": "^0.6.0",
+    "@elysiajs/swagger": "^0.6.1",
     "authey": "^0.8.2",
     "bun-types": "^0.8.1",
     "dns": "^0.2.2",

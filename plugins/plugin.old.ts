@@ -12,23 +12,27 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const getTemplateHTML = async ( path?: string ) => {
     let file: string | BunFile;
-    file = Bun.file( path || './index.html' )
+    file = Bun.file( path || './index.html' );
     if ( isProduction )
     {
-        file = Bun.file( path || './dist/client/index.html' )
+        file = Bun.file( path || './dist/client/index.html' );
     }
-   if (!file) {
-        throw new Error('index.html not found at ' + `${ path || './index.html'}`)
-   }
+    if ( !file )
+    {
+        throw new Error( 'index.html not found at ' + `${ path || './index.html' }` );
+    }
     return await file.text();
 };
 
-function assignDefaults<T>(target: T, defaults: T) {
-    for (const key in defaults) {
-        if (typeof target[key] === 'undefined') {
-            target[key] = defaults[key];
-        } else if (typeof target[key] === 'object' && typeof defaults[key] === 'object') {
-            assignDefaults(target[key], defaults[key]);
+function assignDefaults<T> ( target: T, defaults: T ) {
+    for ( const key in defaults )
+    {
+        if ( typeof target[ key ] === 'undefined' )
+        {
+            target[ key ] = defaults[ key ];
+        } else if ( typeof target[ key ] === 'object' && typeof defaults[ key ] === 'object' )
+        {
+            assignDefaults( target[ key ], defaults[ key ] );
         }
     }
     return target;
@@ -44,9 +48,9 @@ type Options = {
     indexHTML?: string,
     vite?: UserConfig,
     injectHeadScript?: string,
-    ssrManifest?: string
+    ssrManifest?: string;
     port?: 5173,
-    elysia?: ElysiaConfig
+    elysia?: ElysiaConfig;
 
 };
 const opts: Options = {
@@ -102,57 +106,57 @@ export const elysiaViteServer = async ( options: Options ) => {
         const { elysiaConnectDecorate } = ( await import( 'elysia-connect' ) );
 
         const app = new Elysia()
-        .use( html )
-        .use( elysiaConnectDecorate() )
-        .onBeforeHandle( async ( context ) => {
-            // @ts-ignore
-            const handled = await context.elysiaConnect( middleWare.middlewares ?? middleWare, context );
-            if ( handled ) return handled;
-        } )
-        .get( '*', async ( context ) => {
-            
+            .use( html )
+            .use( elysiaConnectDecorate() )
+            .onBeforeHandle( async ( context ) => {
+                // @ts-ignore
+                const handled = await context.elysiaConnect( middleWare.middlewares ?? middleWare, context );
+                if ( handled ) return handled;
+            } )
+            .get( '*', async ( context ) => {
 
-            const url = context.request.url;
-            let template = defaults.indexHTML
-            let render: any;
-            if ( !isProduction )
-            {
-                template = await middleWare.transformIndexHtml( url, template! );
-                render = ( await middleWare.ssrLoadModule( opts.entryServer! ) ).render;
-            } else
-            {
-                render = ( await import( './dist/server/entry-server.js' ) ).render;
-            }
-            try
-            {
 
-                const ssrManifest = opts.ssrManifest;
-                const rendered = await render( url, ssrManifest );
-                const head = ( rendered.head ?? '' ) + options.injectHeadScript ?? '';
-                const html = template!
-                    .replace( defaults.headReplace!, head )
-                    .replace( defaults.htmlReplace! ,rendered.html ?? '' );
-
-                    // @ts-ignore types
-                return context.html( html );
-
-            } catch ( error )
-            {
+                const url = context.request.url;
+                let template = defaults.indexHTML;
+                let render: any;
                 if ( !isProduction )
                 {
-                    middleWare.ssrFixStacktrace( error as Error );
-
+                    template = await middleWare.transformIndexHtml( url, template! );
+                    render = ( await middleWare.ssrLoadModule( opts.entryServer! ) ).render;
                 } else
                 {
-                    console.log( error );
+                    render = ( await import( '../dist/server/entry-server.js' ) ).render;
                 }
-                context.set.status = 500;
-                return 'error';
+                try
+                {
 
-            }
-        } );
+                    const ssrManifest = opts.ssrManifest;
+                    const rendered = await render( url, ssrManifest );
+                    const head = ( rendered.head ?? '' ) + options.injectHeadScript ?? '';
+                    const html = template!
+                        .replace( defaults.headReplace!, head )
+                        .replace( defaults.htmlReplace!, rendered.html ?? '' );
 
-    return app;
+                    // @ts-ignore types
+                    return context.html( html );
+
+                } catch ( error )
+                {
+                    if ( !isProduction )
+                    {
+                        middleWare.ssrFixStacktrace( error as Error );
+
+                    } else
+                    {
+                        console.log( error );
+                    }
+                    context.set.status = 500;
+                    return 'error';
+
+                }
+            } );
+
+        return app;
 
     } catch ( error )
     {

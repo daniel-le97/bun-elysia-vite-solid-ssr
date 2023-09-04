@@ -12,12 +12,13 @@
     "types": ["bun-types"]
   },
   "include": [
-    "server/*/*",
+    ".",
     "index.ts",
-    "plugin.ts",
     "vite.config.ts",
     "client/entry-server.tsx",
     "client/vite-env.d.ts"
   ],
-  "exclude": ["client/App.css"]
+  "exclude": [
+    "client/*"
+  ]
 }
